@@ -4,9 +4,9 @@ import Button from '../components/Button';
 import StatsCard from '../components/StatsCard';
 import { globalStyles } from '../styles/global';
 import { theme } from '../styles/theme';
-import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { HomeStackParamList } from '../routes/HomeStack';
+import { verticalScale } from 'react-native-size-matters';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'Home'>;
 
@@ -59,13 +59,13 @@ const styles = StyleSheet.create({
   home: {
     flex: 1,
     backgroundColor: theme.light.primary,
-    paddingHorizontal: 24,
+    paddingHorizontal: verticalScale(24),
   },
   header: {
-    paddingTop: 72,
-    paddingBottom: 16,
+    paddingTop: verticalScale(32),
+    paddingBottom: verticalScale(16),
     backgroundColor: 'transparent',
-    marginBottom: 64,
+    marginBottom: verticalScale(64),
   },
   sub: {
     textAlign: 'center',
@@ -78,14 +78,14 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     justifyContent: 'space-around',
-    paddingBottom: 96,
+    paddingBottom: verticalScale(128),
   },
   examStats: {
-    marginBottom: 40,
+    marginBottom: verticalScale(40),
   },
   reviewStats: {},
   button: {
-    marginTop: 24,
+    marginTop: verticalScale(24),
     alignItems: 'center',
   },
 });

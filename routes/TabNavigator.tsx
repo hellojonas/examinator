@@ -20,6 +20,7 @@ export default function TabNavigator() {
         name="HomeStack"
         options={{
           headerShown: false,
+          title: 'Início',
         }}
       >
         {() => <HomeStack />}

@@ -5,20 +5,14 @@ import { globalStyles } from './styles/global';
 import { NavigationContainer } from '@react-navigation/native';
 import TabNavigator from './routes/TabNavigator';
 import { theme } from './styles/theme';
-import {
-  useFonts,
-  WorkSans_300Light,
-  WorkSans_400Regular,
-  WorkSans_500Medium,
-  WorkSans_700Bold,
-} from '@expo-google-fonts/work-sans';
+import { useFonts } from 'expo-font';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
-    'ws-light': WorkSans_300Light,
-    'ws-regular': WorkSans_400Regular,
-    'ws-medium': WorkSans_500Medium,
-    'ws-bold': WorkSans_700Bold,
+    'ws-light': require('./assets/font/WorkSans-Light.ttf'),
+    'ws-regular': require('./assets/font/WorkSans-Regular.ttf'),
+    'ws-medium': require('./assets/font/WorkSans-Medium.ttf'),
+    'ws-bold': require('./assets/font/WorkSans-Bold.ttf'),
   });
 
   return fontsLoaded ? (

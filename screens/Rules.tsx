@@ -1,12 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Button from '../components/Button';
 import { globalStyles } from '../styles/global';
 import { theme } from '../styles/theme';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { HomeStackParamList } from '../routes/HomeStack';
+import { Exam, loadExam } from '../modules/exam';
+import { useEffect } from 'react';
+import { verticalScale } from 'react-native-size-matters';
 
 const illustration = require('../assets/illustrations/rules.png');
 
-export default function Rules() {
+type RulesProps = NativeStackScreenProps<HomeStackParamList, 'Rules'>;
+
+export default function Rules({ navigation }: RulesProps) {
+  const [exam, setExam] = useState<Exam | null>();
+  const [loadingExam, setLoadingExam] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setLoadingExam(true);
+    setError(null);
+    const loaded = loadExam()
+      .then(exam => {
+        setExam(exam);
+        console.log(exam);
+        setLoadingExam(false);
+        setError(null);
+      })
+      .catch(err => {
+        setError(err);
+      });
+  }, []);
+
   return (
     <View style={styles.rules}>
       <View style={styles.header}>
@@ -28,7 +54,16 @@ export default function Rules() {
             </Text>
           </View>
           <View>
-            <Button title="Inicar exame" handlePress={() => {}} />
+            <Button
+              title="Inicar exame"
+              handlePress={() => {
+                if (loadingExam) {
+                  alert('loading please wait...');
+                  return;
+                }
+                navigation.navigate('Exam');
+              }}
+            />
           </View>
         </View>
       </ScrollView>
@@ -42,15 +77,15 @@ const styles = StyleSheet.create({
   },
   header: {
     height: '60%',
-    paddingBottom: 30,
+    paddingBottom: verticalScale(30),
     backgroundColor: theme.light.tertiary,
-    paddingHorizontal: 16,
+    paddingHorizontal: verticalScale(16),
   },
   imageWrapper: {
     justifyContent: 'center',
     alignItems: 'center',
     padding: 0,
-    marginBottom: 10,
+    marginBottom: verticalScale(10),
     height: '70%',
   },
   image: {
@@ -73,23 +108,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: theme.light.primary,
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
+    borderTopRightRadius: verticalScale(20),
+    borderTopLeftRadius: verticalScale(20),
     paddingHorizontal: 16,
     paddingTop: '20%',
-    paddingBottom: '30%',
+    paddingBottom: '35%',
   },
   ruleCard: {
     ...globalStyles.shadowElements,
     backgroundColor: theme.light.secondary,
-    padding: 16,
-    borderRadius: 20,
-    marginBottom: 16,
+    padding: verticalScale(16),
+    borderRadius: verticalScale(20),
+    marginBottom: verticalScale(16),
   },
   text: {
-    ...globalStyles.body1,
+    ...globalStyles.body2,
   },
   textBottom: {
-    marginTop: 10,
+    marginTop: verticalScale(10),
   },
 });

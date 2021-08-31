@@ -2,6 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { StyleSheet, Text } from 'react-native';
 import { TouchableOpacity } from 'react-native';
+import { verticalScale } from 'react-native-size-matters';
 import { globalStyles } from '../styles/global';
 import { theme } from '../styles/theme';
 
@@ -33,12 +34,12 @@ export default function Button({ title, handlePress, btnType }: IButton) {
 const styles = StyleSheet.create({
   button: {
     ...globalStyles.shadowElements,
-    height: 40,
+    height: verticalScale(40),
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: theme.light.accent,
-    paddingHorizontal: 16,
+    paddingHorizontal: verticalScale(16),
     borderRadius: 6,
   },
   secondary: {
@@ -47,6 +48,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   text: {
+    ...globalStyles.button,
     textTransform: 'uppercase',
     letterSpacing: 1,
     color: theme.light.buttonTextPrimary,
