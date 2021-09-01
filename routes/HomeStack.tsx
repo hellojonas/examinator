@@ -4,11 +4,12 @@ import Home from '../screens/Home';
 import Rules from '../screens/Rules';
 import { theme } from '../styles/theme';
 import ExamSession from '../screens/ExamSession';
+import { Exam } from '../types';
 
 export type HomeStackParamList = {
   Home: undefined;
   Rules: undefined;
-  Exam: undefined;
+  Exam: { exam: Exam };
 };
 
 const Stack = createNativeStackNavigator<HomeStackParamList>();
@@ -37,8 +38,9 @@ export default function HomeStack() {
         name="Exam"
         component={ExamSession}
         options={{
-          headerShown: false,
+          headerBackVisible: false,
           title: 'Exame',
+          headerStyle: { backgroundColor: theme.light.tertiary },
         }}
       />
     </Stack.Navigator>

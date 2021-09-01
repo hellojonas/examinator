@@ -1,57 +1,25 @@
 import axios from 'axios';
 import _ from 'lodash';
-
-export interface IQuestion {
-  id: string;
-  value: string;
-  image: string;
-  category: 'ROAD_SINGS' | 'LAWS';
-  correct: {
-    id: string;
-    value: string;
-  };
-  answers: {
-    id: string;
-    value: string;
-  }[];
-}
-
-export type Exam = IQuestion[];
-
-export interface Solution {
-  questionId: string;
-  userAnswerId: string;
-  correctAnswerId: string;
-  isCorrect: boolean;
-}
-
-export interface Summary {
-  solutions: Solution[];
-  passed: boolean;
-}
-
-export interface IAnswer {
-  questionId: string;
-  userAnswerId: string;
-}
+import { Exam, IAnswer, IQuestion, Solution, Summary } from '../types';
 
 export const loadExam = async (): Promise<Exam | null> => {
   // generate random ids
   const questionsId = _.range(1, 26);
   const query = questionsId.map(id => `id_in=${id}`).join('&');
-  const url = `http://localhost:1337/questions?${query}`;
-
-  console.log('hit', url);
+  const url = `http://10.0.2.2:1337/questions?${query}`;
 
   let questions: Exam;
-  try {
-    const res = await axios.get<Exam>(url);
 
-    if (res.statusText !== 'OK') {
-      throw new Error('failed to load exam');
+  try {
+    const res = await fetch(url);
+
+    if (!res.ok) {
+      throw new Error('Failed to load exam');
     }
 
-    questions = res.data;
+    const data = await res.json();
+
+    questions = data as Exam;
   } catch (err) {
     console.error(err);
     return null;
@@ -61,7 +29,7 @@ export const loadExam = async (): Promise<Exam | null> => {
 };
 
 export const solveOne = (questions: IQuestion[], answer: IAnswer): Solution => {
-  const question = questions.find(q => q.id.toString() === answer.questionId);
+  const question = questions.find(q => q.id === answer.questionId);
 
   if (!question) {
     throw Error(
@@ -70,10 +38,10 @@ export const solveOne = (questions: IQuestion[], answer: IAnswer): Solution => {
   }
 
   return {
-    questionId: question.id.toString(),
-    correctAnswerId: question.correct.id.toString(),
+    questionId: question.id,
+    correctAnswerId: question.correct.id,
     isCorrect: question.correct.id == answer.userAnswerId,
-    userAnswerId: answer.userAnswerId.toString(),
+    userAnswerId: answer.userAnswerId,
   };
 };
 

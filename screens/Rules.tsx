@@ -5,33 +5,23 @@ import { globalStyles } from '../styles/global';
 import { theme } from '../styles/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { HomeStackParamList } from '../routes/HomeStack';
-import { Exam, loadExam } from '../modules/exam';
+// import { Exam, loadExam } from '../modules/exam';
 import { useEffect } from 'react';
 import { verticalScale } from 'react-native-size-matters';
+import { useQuery } from '@apollo/client';
+import { Exam } from '../modules/exam';
+import _ from 'lodash';
+import { GET_EXAM } from '../modules/queries';
 
 const illustration = require('../assets/illustrations/rules.png');
 
 type RulesProps = NativeStackScreenProps<HomeStackParamList, 'Rules'>;
 
 export default function Rules({ navigation }: RulesProps) {
-  const [exam, setExam] = useState<Exam | null>();
-  const [loadingExam, setLoadingExam] = useState(false);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    setLoadingExam(true);
-    setError(null);
-    const loaded = loadExam()
-      .then(exam => {
-        setExam(exam);
-        console.log(exam);
-        setLoadingExam(false);
-        setError(null);
-      })
-      .catch(err => {
-        setError(err);
-      });
-  }, []);
+  const ids = _.range(1, 26);
+  const { data, loading, error } = useQuery<{ questions: Exam }>(GET_EXAM, {
+    variables: { ids },
+  });
 
   return (
     <View style={styles.rules}>
@@ -57,11 +47,13 @@ export default function Rules({ navigation }: RulesProps) {
             <Button
               title="Inicar exame"
               handlePress={() => {
-                if (loadingExam) {
+                if (loading) {
                   alert('loading please wait...');
                   return;
                 }
-                navigation.navigate('Exam');
+                if (!error) {
+                  navigation.navigate('Exam', { exam: data?.questions! });
+                }
               }}
             />
           </View>
@@ -112,14 +104,14 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: verticalScale(20),
     paddingHorizontal: 16,
     paddingTop: '20%',
-    paddingBottom: '35%',
+    paddingBottom: '25%',
   },
   ruleCard: {
     ...globalStyles.shadowElements,
     backgroundColor: theme.light.secondary,
     padding: verticalScale(16),
     borderRadius: verticalScale(20),
-    marginBottom: verticalScale(16),
+    marginBottom: verticalScale(32),
   },
   text: {
     ...globalStyles.body2,

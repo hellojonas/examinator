@@ -1,11 +1,17 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { AppRegistry, StyleSheet, Text, View } from 'react-native';
 import { globalStyles } from './styles/global';
 import { NavigationContainer } from '@react-navigation/native';
 import TabNavigator from './routes/TabNavigator';
 import { theme } from './styles/theme';
 import { useFonts } from 'expo-font';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+
+const client = new ApolloClient({
+  uri: 'http://10.0.2.2:1337/graphql',
+  cache: new InMemoryCache(),
+});
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -17,10 +23,12 @@ export default function App() {
 
   return fontsLoaded ? (
     <NavigationContainer>
-      <View style={styles.app}>
-        <TabNavigator />
-        <StatusBar style="auto" />
-      </View>
+      <ApolloProvider client={client}>
+        <View style={styles.app}>
+          <TabNavigator />
+          <StatusBar style="auto" />
+        </View>
+      </ApolloProvider>
     </NavigationContainer>
   ) : (
     <Text>Loading</Text>
@@ -32,3 +40,5 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+AppRegistry.registerComponent('Examinator', () => App);

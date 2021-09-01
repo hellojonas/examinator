@@ -6,7 +6,7 @@ export const globalStyles = StyleSheet.create({
     flex: 1,
   },
   heading1: {
-    fontSize: moderateScale(42, 2),
+    fontSize: moderateScale(42, 1),
     fontFamily: 'ws-regular',
   },
   heading2: {
