@@ -3,13 +3,15 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from '../screens/Home';
 import Rules from '../screens/Rules';
 import { theme } from '../styles/theme';
-import ExamSession from '../screens/ExamSession';
-import { Exam } from '../types';
+import Exam from '../screens/Exam';
+import { IAnswer, IQuestion, Summary } from '../types';
+import Score from '../screens/Score';
 
 export type HomeStackParamList = {
   Home: undefined;
   Rules: undefined;
-  Exam: { exam: Exam };
+  Exam: { exam: IQuestion[] };
+  Score: { summary: Summary };
 };
 
 const Stack = createNativeStackNavigator<HomeStackParamList>();
@@ -36,9 +38,17 @@ export default function HomeStack() {
       />
       <Stack.Screen
         name="Exam"
-        component={ExamSession}
+        component={Exam}
         options={{
           headerBackVisible: false,
+          title: 'Exame',
+          headerStyle: { backgroundColor: theme.light.tertiary },
+        }}
+      />
+      <Stack.Screen
+        name="Score"
+        component={Score}
+        options={{
           title: 'Exame',
           headerStyle: { backgroundColor: theme.light.tertiary },
         }}

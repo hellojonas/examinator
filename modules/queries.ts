@@ -12,6 +12,10 @@ export const GET_EXAM = gql`
       image {
         url
       }
+      correct {
+        id
+        value
+      }
     }
   }
 `;

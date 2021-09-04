@@ -5,13 +5,12 @@ import { globalStyles } from '../styles/global';
 import { theme } from '../styles/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { HomeStackParamList } from '../routes/HomeStack';
-// import { Exam, loadExam } from '../modules/exam';
-import { useEffect } from 'react';
 import { verticalScale } from 'react-native-size-matters';
 import { useQuery } from '@apollo/client';
-import { Exam } from '../modules/exam';
+
 import _ from 'lodash';
 import { GET_EXAM } from '../modules/queries';
+import { IQuestion } from '../types';
 
 const illustration = require('../assets/illustrations/rules.png');
 
@@ -19,9 +18,12 @@ type RulesProps = NativeStackScreenProps<HomeStackParamList, 'Rules'>;
 
 export default function Rules({ navigation }: RulesProps) {
   const ids = _.range(1, 26);
-  const { data, loading, error } = useQuery<{ questions: Exam }>(GET_EXAM, {
-    variables: { ids },
-  });
+  const { data, loading, error } = useQuery<{ questions: IQuestion[] }>(
+    GET_EXAM,
+    {
+      variables: { ids },
+    }
+  );
 
   return (
     <View style={styles.rules}>
@@ -52,7 +54,9 @@ export default function Rules({ navigation }: RulesProps) {
                   return;
                 }
                 if (!error) {
-                  navigation.navigate('Exam', { exam: data?.questions! });
+                  navigation.navigate('Exam', {
+                    exam: _.shuffle(data?.questions!),
+                  });
                 }
               }}
             />

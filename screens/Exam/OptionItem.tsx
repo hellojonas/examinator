@@ -14,7 +14,7 @@ export interface IOptionProps {
   active?: boolean;
 }
 
-export default function Option({
+export default function OptionItem({
   text,
   handlePress,
   id,

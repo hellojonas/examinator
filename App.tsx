@@ -1,10 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { AppRegistry, StyleSheet, Text, View } from 'react-native';
-import { globalStyles } from './styles/global';
 import { NavigationContainer } from '@react-navigation/native';
 import TabNavigator from './routes/TabNavigator';
-import { theme } from './styles/theme';
 import { useFonts } from 'expo-font';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 

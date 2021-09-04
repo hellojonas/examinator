@@ -1,35 +1,40 @@
 export interface IQuestion {
-  id: number;
+  id: number | string;
   value: string;
   image: {
     url: string;
   };
   category: 'ROAD_SINGS' | 'LAWS';
   correct: {
-    id: number;
+    id: number | string;
     value: string;
   };
   answers: {
-    id: number;
+    id: number | string;
     value: string;
   }[];
+  order?: number;
 }
 
-export type Exam = IQuestion[];
-
 export interface Solution {
-  questionId: number;
-  userAnswerId: number;
-  correctAnswerId: number;
+  questionId?: number | string;
+  userAnswerId?: number | string;
+  correctAnswerId: number | string;
   isCorrect: boolean;
 }
 
 export interface Summary {
-  solutions: Solution[];
+  solutions: {
+    [questionId: string]: Solution;
+  };
   passed: boolean;
 }
 
 export interface IAnswer {
-  questionId: number;
-  userAnswerId: number;
+  questionId: number | string;
+  userAnswerId?: number | string;
 }
+
+export type AnswerMap = {
+  [questionId: string]: { userAnswerId?: number | string };
+};

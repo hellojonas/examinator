@@ -1,25 +1,22 @@
 import axios from 'axios';
 import _ from 'lodash';
-import { Exam, IAnswer, IQuestion, Solution, Summary } from '../types';
+import { AnswerMap, IAnswer, IQuestion, Solution, Summary } from '../types';
 
-export const loadExam = async (): Promise<Exam | null> => {
-  // generate random ids
+export const loadExam = async (): Promise<IQuestion[] | null> => {
   const questionsId = _.range(1, 26);
   const query = questionsId.map(id => `id_in=${id}`).join('&');
-  const url = `http://10.0.2.2:1337/questions?${query}`;
+  const url = `http://localhost:1337/questions?${query}`;
 
-  let questions: Exam;
+  let questions: IQuestion[];
 
   try {
-    const res = await fetch(url);
+    const res = await axios.get(url);
 
-    if (!res.ok) {
+    if (res.status != 200) {
       throw new Error('Failed to load exam');
     }
 
-    const data = await res.json();
-
-    questions = data as Exam;
+    questions = res.data as IQuestion[];
   } catch (err) {
     console.error(err);
     return null;
@@ -29,30 +26,36 @@ export const loadExam = async (): Promise<Exam | null> => {
 };
 
 export const solveOne = (questions: IQuestion[], answer: IAnswer): Solution => {
-  const question = questions.find(q => q.id === answer.questionId);
+  const question = questions.find(q => q.id == answer.questionId);
 
   if (!question) {
-    throw Error(
-      `Question with id '${answer.questionId}' not found in collection provided`
+    throw new Error(
+      `Question with id ${answer.questionId} not found in collection provided`
     );
   }
 
   return {
-    questionId: question.id,
-    correctAnswerId: question.correct.id,
+    questionId: question.id.toString(),
+    correctAnswerId: question.correct.id.toString(),
     isCorrect: question.correct.id == answer.userAnswerId,
-    userAnswerId: answer.userAnswerId,
+    userAnswerId: answer.userAnswerId?.toString(),
   };
 };
 
-export const solve = (questions: IQuestion[], answers: IAnswer[]): Summary => {
-  const solutions = answers.map(a => {
-    const s = solveOne(questions, a);
-    return s;
-  });
+export const solve = (questions: IQuestion[], answers: AnswerMap): Summary => {
+  let summary: Summary = { passed: false, solutions: {} };
 
-  return {
-    passed: solutions.filter(sol => sol.isCorrect).length >= 18,
-    solutions,
-  };
+  _.forEach(
+    answers,
+    (ans, qid) =>
+      (summary.solutions[qid] = solveOne(questions, {
+        questionId: qid,
+        userAnswerId: ans.userAnswerId,
+      }))
+  );
+
+  summary.passed =
+    _.filter(summary.solutions, sol => sol.isCorrect).length >= 18;
+
+  return summary;
 };

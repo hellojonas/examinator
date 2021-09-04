@@ -1,16 +1,9 @@
 import React from 'react';
-import { useState } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text } from 'react-native';
+import { View } from 'react-native';
 import { scale, verticalScale } from 'react-native-size-matters';
 import { globalStyles } from '../../styles/global';
 import { theme } from '../../styles/theme';
-import { IQuestion } from '../../types';
-import Option, { OptionEmitter } from './Option';
-
-interface IQuestionProps {
-  question: IQuestion;
-  count: number;
-}
 
 interface IQuestionHeaderProps {
   image: string;
@@ -18,15 +11,7 @@ interface IQuestionHeaderProps {
   count: number;
 }
 
-interface IOptionListProps {
-  answers: {
-    id: number;
-    value: string;
-  }[];
-  handlePress?: () => any;
-}
-
-export function QuestionHeader({
+export default function QuestionHeader({
   image,
   questionText,
   count,
@@ -51,44 +36,7 @@ export function QuestionHeader({
   );
 }
 
-export function OptionList({ answers }: IOptionListProps) {
-  const [active, setActive] = useState<number>();
-
-  const _handlePress: OptionEmitter = option => {
-    setActive(option.id);
-  };
-
-  const optionLIst = answers.map(ans => (
-    <Option
-      id={ans.id}
-      key={ans.id}
-      text={ans.value}
-      active={ans.id == active}
-      handlePress={_handlePress}
-    />
-  ));
-
-  return <View style={styles.optionList}>{optionLIst}</View>;
-}
-
-export function Question({ question, count }: IQuestionProps) {
-  return (
-    <View style={styles.question}>
-      <QuestionHeader
-        count={count}
-        image={question.image.url}
-        questionText={question.value}
-      />
-      <OptionList answers={question.answers} />
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
-  question: {
-    // borderWidth: 2,
-    // borderColor: 'red',
-  },
   header: {
     marginBottom: verticalScale(32),
   },
@@ -122,5 +70,4 @@ const styles = StyleSheet.create({
     ...globalStyles.body2,
     fontFamily: 'ws-bold',
   },
-  optionList: {},
 });
