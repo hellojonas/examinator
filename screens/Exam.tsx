@@ -20,10 +20,11 @@ import { useEffect } from 'react';
 import { pad } from '../modules/padTimeComponent';
 import { solve } from '../modules/exam';
 import _ from 'lodash';
+import DialogConfirm from '../components/DialogConfirm';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'Exam'>;
 
-const WINDOW = Dimensions.get('window').width;
+const WINDOW_WIDTH = Dimensions.get('window').width;
 
 export default function ExamSession({ route, navigation }: Props) {
   const { exam } = route.params;
@@ -62,6 +63,13 @@ export default function ExamSession({ route, navigation }: Props) {
   };
 
   const handleSubmit = () => {
+    setShowModal(true);
+  };
+
+  const [showModal, setShowModal] = useState(false);
+
+  const handleConfirm = () => {
+    // Bla bla here
     clrInterval && stopTimer();
     const _answers = { ...answers };
 
@@ -74,10 +82,20 @@ export default function ExamSession({ route, navigation }: Props) {
     const summary = solve(exam, _answers);
 
     navigation.navigate('Score', { summary });
+    setShowModal(false);
   };
+
+  const handleCancel = () => setShowModal(false);
 
   return (
     <examContext.Provider value={{ addAnswer, answers }}>
+      <DialogConfirm
+        title="Confirmar término de exame?"
+        visible={showModal}
+        handleConfirm={handleConfirm}
+        handleCancel={handleCancel}
+      />
+
       <View style={styles.container}>
         <ScrollView style={styles.body}>
           <View style={styles.wrapper}>
@@ -110,8 +128,8 @@ export default function ExamSession({ route, navigation }: Props) {
               renderItem={({ item, index }) => (
                 <Question question={item} count={index} />
               )}
-              sliderWidth={WINDOW - 32}
-              itemWidth={WINDOW - 48}
+              sliderWidth={WINDOW_WIDTH - 32}
+              itemWidth={WINDOW_WIDTH - 48}
             />
           </View>
         </ScrollView>
@@ -130,7 +148,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: verticalScale(24),
-    width: WINDOW - 32,
+    width: WINDOW_WIDTH - 32,
   },
   timer: {
     flexDirection: 'row',
