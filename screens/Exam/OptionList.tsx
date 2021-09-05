@@ -15,7 +15,7 @@ export function OptionList({ answers, handlePress }: IOptionListProps) {
   const [active, setActive] = useState<number>();
 
   const _handlePress: OptionEmitter = option => {
-    setActive(option.id);
+    setActive(option.id == active ? -1 : option.id);
     handlePress && handlePress(option);
   };
 
