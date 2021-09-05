@@ -21,6 +21,7 @@ import { pad } from '../modules/padTimeComponent';
 import { solve } from '../modules/exam';
 import _ from 'lodash';
 import DialogConfirm from '../components/DialogConfirm';
+import Dialog from '../components/Dialog';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'Exam'>;
 
@@ -29,8 +30,9 @@ const WINDOW_WIDTH = Dimensions.get('window').width;
 export default function ExamSession({ route, navigation }: Props) {
   const { exam } = route.params;
   const [answers, setAnswers] = useState<AnswerMap>({});
-  const [timer, setTimer] = useState(3600);
+  const [timer, setTimer] = useState(10);
   const [clrInterval, setClrInterval] = useState<NodeJS.Timer | null>(null);
+  const [autoSumit, setAutoSubmit] = useState(false);
 
   useEffect(() => {
     if (clrInterval) {
@@ -39,6 +41,13 @@ export default function ExamSession({ route, navigation }: Props) {
 
     startTimer();
   }, []);
+
+  useEffect(() => {
+    if (timer <= 0) {
+      stopTimer();
+      setAutoSubmit(true);
+    }
+  }, [timer]);
 
   const addAnswer = (answer: IAnswer) => {
     setAnswers(old => ({
@@ -69,8 +78,7 @@ export default function ExamSession({ route, navigation }: Props) {
   const [showModal, setShowModal] = useState(false);
 
   const handleConfirm = () => {
-    // Bla bla here
-    clrInterval && stopTimer();
+    stopTimer();
     const _answers = { ...answers };
 
     exam.forEach(q => {
@@ -81,7 +89,7 @@ export default function ExamSession({ route, navigation }: Props) {
 
     const summary = solve(exam, _answers);
 
-    navigation.navigate('Score', { summary });
+    navigation.replace('Score', { summary });
     setShowModal(false);
   };
 
@@ -94,6 +102,11 @@ export default function ExamSession({ route, navigation }: Props) {
         visible={showModal}
         handleConfirm={handleConfirm}
         handleCancel={handleCancel}
+      />
+      <Dialog
+        title="Tempo esgotado"
+        visible={autoSumit}
+        handleClick={handleConfirm}
       />
 
       <View style={styles.container}>
