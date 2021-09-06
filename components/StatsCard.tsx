@@ -5,7 +5,7 @@ import { theme } from '../styles/theme';
 import { globalStyles } from '../styles/global';
 
 export interface IStatsCardProps {
-  items: { key: string; value: string }[];
+  items: { key: string; value: any }[];
   icon: 'emoji-events' | 'school';
 }
 
