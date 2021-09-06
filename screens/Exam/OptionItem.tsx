@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
-import { Text, TouchableWithoutFeedback, View } from 'react-native';
-import { scale, verticalScale } from 'react-native-size-matters';
-import { globalStyles } from '../../styles/global';
-import { theme } from '../../styles/theme';
+import React, { useEffect, useState } from "react";
+import { StyleSheet } from "react-native";
+import { Text, TouchableWithoutFeedback, View } from "react-native";
+import { scale, verticalScale } from "react-native-size-matters";
+import { globalStyles } from "../../styles/global";
+import { theme } from "../../styles/theme";
 
 export type OptionEmitter = (option: { text: string; id: number }) => any;
 
@@ -12,6 +12,7 @@ export interface IOptionProps {
   text: string;
   id: number;
   active?: boolean;
+  isWrong?: boolean;
 }
 
 export default function OptionItem({
@@ -19,18 +20,20 @@ export default function OptionItem({
   handlePress,
   id,
   active,
+  isWrong,
 }: IOptionProps) {
   const _handlePress = () => {
     handlePress && handlePress({ text, id });
   };
 
   const [color, setColor] = useState<{ backgroundColor: string }>({
-    backgroundColor: '#00000000',
+    backgroundColor: "#00000000",
   });
 
   useEffect(() => {
+    const activeColor = theme.light[!isWrong ? "optionActive" : "optionWrong"];
     setColor({
-      backgroundColor: active ? theme.light.optionActive : '#00000000',
+      backgroundColor: active ? activeColor : "#00000000",
     });
   }, [active]);
 
@@ -47,7 +50,7 @@ const styles = StyleSheet.create({
     marginBottom: verticalScale(10),
     padding: scale(10),
     minHeight: verticalScale(60),
-    justifyContent: 'center',
+    justifyContent: "center",
     borderRadius: 8,
     borderWidth: 1,
     borderColor: theme.light.borderOption,

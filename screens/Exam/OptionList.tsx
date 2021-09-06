@@ -9,12 +9,21 @@ interface IOptionListProps {
     value: string;
   }[];
   handlePress?: OptionEmitter;
+  permActiveId?: number;
 }
 
-export function OptionList({ answers, handlePress }: IOptionListProps) {
-  const [active, setActive] = useState<number>();
+export function OptionList({
+  answers,
+  handlePress,
+  permActiveId,
+}: IOptionListProps) {
+  const [active, setActive] = useState(permActiveId);
 
   const _handlePress: OptionEmitter = option => {
+    if (permActiveId) {
+      return;
+    }
+
     setActive(option.id == active ? -1 : option.id);
     handlePress && handlePress(option);
   };

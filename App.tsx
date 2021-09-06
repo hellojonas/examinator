@@ -29,8 +29,8 @@ export default function App() {
       </ApolloProvider>
     </NavigationContainer>
   ) : (
-    <Text>Loading</Text>
-  );
+      <Text>Loading</Text>
+    );
 }
 
 const styles = StyleSheet.create({

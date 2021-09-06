@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Dimensions,
   ScrollView,
@@ -6,31 +6,31 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { HomeStackParamList } from '../routes/HomeStack';
-import Carousel from 'react-native-snap-carousel';
-import { scale, verticalScale } from 'react-native-size-matters';
-import { Question } from './Exam/Question';
-import { theme } from '../styles/theme';
-import { MaterialIcons } from '@expo/vector-icons';
-import { AnswerMap, IAnswer, IQuestion } from '../types';
-import { examContext } from '../context/examContext';
-import { useEffect } from 'react';
-import { pad } from '../modules/padTimeComponent';
-import { solve } from '../modules/exam';
-import _ from 'lodash';
-import DialogConfirm from '../components/DialogConfirm';
-import Dialog from '../components/Dialog';
+} from "react-native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { HomeStackParamList } from "../routes/HomeStack";
+import Carousel from "react-native-snap-carousel";
+import { scale, verticalScale } from "react-native-size-matters";
+import { Question } from "./Exam/Question";
+import { theme } from "../styles/theme";
+import { MaterialIcons } from "@expo/vector-icons";
+import { AnswerMap, IAnswer, IQuestion } from "../types";
+import { examContext } from "../context/examContext";
+import { useEffect } from "react";
+import { pad } from "../modules/padTimeComponent";
+import { solve } from "../modules/exam";
+import _ from "lodash";
+import DialogConfirm from "../components/DialogConfirm";
+import Dialog from "../components/Dialog";
 
-type Props = NativeStackScreenProps<HomeStackParamList, 'Exam'>;
+type Props = NativeStackScreenProps<HomeStackParamList, "Exam">;
 
-const WINDOW_WIDTH = Dimensions.get('window').width;
+const WINDOW_WIDTH = Dimensions.get("window").width;
 
 export default function ExamSession({ route, navigation }: Props) {
   const { exam } = route.params;
   const [answers, setAnswers] = useState<AnswerMap>({});
-  const [timer, setTimer] = useState(10);
+  const [timer, setTimer] = useState(3600);
   const [clrInterval, setClrInterval] = useState<NodeJS.Timer | null>(null);
   const [autoSumit, setAutoSubmit] = useState(false);
 
@@ -40,6 +40,10 @@ export default function ExamSession({ route, navigation }: Props) {
     }
 
     startTimer();
+
+    return function cleanup() {
+      stopTimer()
+    };
   }, []);
 
   useEffect(() => {
@@ -47,10 +51,14 @@ export default function ExamSession({ route, navigation }: Props) {
       stopTimer();
       setAutoSubmit(true);
     }
+
+    return function cleanup() {
+      stopTimer()
+    };
   }, [timer]);
 
   const addAnswer = (answer: IAnswer) => {
-    setAnswers(old => ({
+    setAnswers((old) => ({
       ...old,
       [answer.questionId]: {
         userAnswerId: answer.userAnswerId,
@@ -59,7 +67,7 @@ export default function ExamSession({ route, navigation }: Props) {
   };
 
   const startTimer = () => {
-    const clr = setInterval(() => setTimer(old => old - 1), 1000);
+    const clr = setInterval(() => setTimer((old) => old - 1), 1000);
     setClrInterval(clr);
   };
 
@@ -81,7 +89,7 @@ export default function ExamSession({ route, navigation }: Props) {
     stopTimer();
     const _answers = { ...answers };
 
-    exam.forEach(q => {
+    exam.forEach((q) => {
       if (!(q.id in _answers)) {
         _answers[q.id] = { userAnswerId: undefined };
       }
@@ -89,7 +97,7 @@ export default function ExamSession({ route, navigation }: Props) {
 
     const summary = solve(exam, _answers);
 
-    navigation.replace('Score', { summary });
+    navigation.replace("Score", { summary, questions: exam });
     setShowModal(false);
   };
 
@@ -138,7 +146,7 @@ export default function ExamSession({ route, navigation }: Props) {
             <Carousel
               style={styles.carousel}
               data={exam}
-              renderItem={({ item, index }) => (
+              renderItem={({ item, index }: {item: IQuestion, index: number}) => (
                 <Question question={item} count={index} />
               )}
               sliderWidth={WINDOW_WIDTH - 32}
@@ -157,31 +165,31 @@ const styles = StyleSheet.create({
     backgroundColor: theme.light.primary,
   },
   action: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: verticalScale(24),
     width: WINDOW_WIDTH - 32,
   },
   timer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
   timerText: {
     marginLeft: scale(4),
   },
   btnSubmit: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     padding: scale(4),
     paddingHorizontal: scale(8),
     backgroundColor: theme.light.borderOptionWrong,
     borderRadius: 8,
   },
   buttonText: {
-    fontFamily: 'ws-bold',
+    fontFamily: "ws-bold",
     fontSize: scale(12),
     marginLeft: scale(4),
     color: theme.light.secondary,
@@ -192,10 +200,10 @@ const styles = StyleSheet.create({
     paddingBottom: verticalScale(32),
   },
   wrapper: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: verticalScale(96),
   },
   carousel: {
-    alignItems: 'center',
+    alignItems: "center",
   },
 });

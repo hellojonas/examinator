@@ -1,39 +1,44 @@
-import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Home from '../screens/Home';
-import Rules from '../screens/Rules';
-import { theme } from '../styles/theme';
-import Exam from '../screens/Exam';
-import { IAnswer, IQuestion, Summary } from '../types';
-import Score from '../screens/Score';
+import React from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Home from "../screens/Home";
+import Rules from "../screens/Rules";
+import { theme } from "../styles/theme";
+import Exam from "../screens/Exam";
+import { IQuestion, Summary } from "../types";
+import Score from "../screens/Score";
+import ExamReview from "../screens/ExamReview";
 
 export type HomeStackParamList = {
   Home: undefined;
   Rules: undefined;
   Exam: { exam: IQuestion[] };
-  Score: { summary: Summary };
+  Score: { summary: Summary; questions: IQuestion[] };
+  ExamReview: { summary: Summary; questions: IQuestion[] };
 };
 
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 
 export default function HomeStack() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: theme.light.tertiary },
+      }}
+    >
       <Stack.Screen
         name="Home"
         component={Home}
         options={{
-          headerStyle: { backgroundColor: theme.light.tertiary },
-          title: 'Início',
+          title: "Início",
         }}
       />
       <Stack.Screen
         name="Rules"
         component={Rules}
         options={{
-          title: '',
+          title: "",
           headerShadowVisible: false,
-          headerStyle: { backgroundColor: theme.light.tertiary },
+          headerBackVisible: false
         }}
       />
       <Stack.Screen
@@ -41,16 +46,22 @@ export default function HomeStack() {
         component={Exam}
         options={{
           headerBackVisible: false,
-          title: 'Exame',
-          headerStyle: { backgroundColor: theme.light.tertiary },
+          title: "Exame",
         }}
       />
       <Stack.Screen
         name="Score"
         component={Score}
         options={{
-          title: 'Exame',
-          headerStyle: { backgroundColor: theme.light.tertiary },
+          title: "Exame",
+          headerBackVisible: false
+        }}
+      />
+      <Stack.Screen
+        name="ExamReview"
+        component={ExamReview}
+        options={{
+          title: "Respostas",
         }}
       />
     </Stack.Navigator>
