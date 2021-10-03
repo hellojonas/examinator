@@ -14,7 +14,7 @@ import { scale, verticalScale } from "react-native-size-matters";
 import { Question } from "./Exam/Question";
 import { theme } from "../styles/theme";
 import { MaterialIcons } from "@expo/vector-icons";
-import { AnswerMap, IAnswer, IQuestion } from "../types";
+import { AnswerMap, IUserAnswer, IQuestion } from "../types";
 import { examContext } from "../context/examContext";
 import { useEffect } from "react";
 import { pad } from "../modules/padTimeComponent";
@@ -35,14 +35,12 @@ export default function ExamSession({ route, navigation }: Props) {
   const [autoSumit, setAutoSubmit] = useState(false);
 
   useEffect(() => {
-    if (clrInterval) {
-      return;
+    if (!clrInterval) {
+      startTimer();
     }
 
-    startTimer();
-
     return function cleanup() {
-      stopTimer()
+      stopTimer();
     };
   }, []);
 
@@ -51,13 +49,9 @@ export default function ExamSession({ route, navigation }: Props) {
       stopTimer();
       setAutoSubmit(true);
     }
-
-    return function cleanup() {
-      stopTimer()
-    };
   }, [timer]);
 
-  const addAnswer = (answer: IAnswer) => {
+  const addAnswer = (answer: IUserAnswer) => {
     setAnswers((old) => ({
       ...old,
       [answer.questionId]: {
@@ -67,6 +61,10 @@ export default function ExamSession({ route, navigation }: Props) {
   };
 
   const startTimer = () => {
+    if (clrInterval) {
+      return;
+    }
+
     const clr = setInterval(() => setTimer((old) => old - 1), 1000);
     setClrInterval(clr);
   };
@@ -76,7 +74,7 @@ export default function ExamSession({ route, navigation }: Props) {
       return;
     }
     clearInterval(clrInterval);
-    setClrInterval(null);
+    // setClrInterval(null);
   };
 
   const handleSubmit = () => {
@@ -146,9 +144,13 @@ export default function ExamSession({ route, navigation }: Props) {
             <Carousel
               style={styles.carousel}
               data={exam}
-              renderItem={({ item, index }: {item: IQuestion, index: number}) => (
-                <Question question={item} count={index} />
-              )}
+              renderItem={({
+                item,
+                index,
+              }: {
+                item: IQuestion;
+                index: number;
+              }) => <Question question={item} count={index} />}
               sliderWidth={WINDOW_WIDTH - 32}
               itemWidth={WINDOW_WIDTH - 48}
             />

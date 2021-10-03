@@ -1,10 +1,10 @@
-import axios from 'axios';
-import _ from 'lodash';
-import { AnswerMap, IAnswer, IQuestion, Solution, Summary } from '../types';
+import axios from "axios";
+import _ from "lodash";
+import { AnswerMap, IQuestion, IUserAnswer, Solution, Summary } from "../types";
 
 export const loadExam = async (): Promise<IQuestion[] | null> => {
   const questionsId = _.range(1, 26);
-  const query = questionsId.map(id => `id_in=${id}`).join('&');
+  const query = questionsId.map((id) => `id_in=${id}`).join("&");
   const url = `http://localhost:1337/questions?${query}`;
 
   let questions: IQuestion[];
@@ -13,7 +13,7 @@ export const loadExam = async (): Promise<IQuestion[] | null> => {
     const res = await axios.get(url);
 
     if (res.status != 200) {
-      throw new Error('Failed to load exam');
+      throw new Error("Failed to load exam");
     }
 
     questions = res.data as IQuestion[];
@@ -25,8 +25,11 @@ export const loadExam = async (): Promise<IQuestion[] | null> => {
   return questions;
 };
 
-export const solveOne = (questions: IQuestion[], answer: IAnswer): Solution => {
-  const question = questions.find(q => q.id == answer.questionId);
+export const solveOne = (
+  questions: IQuestion[],
+  answer: IUserAnswer
+): Solution => {
+  const question = questions.find((q) => q.id == answer.questionId);
 
   if (!question) {
     throw new Error(
@@ -36,8 +39,8 @@ export const solveOne = (questions: IQuestion[], answer: IAnswer): Solution => {
 
   return {
     questionId: question.id.toString(),
-    correctAnswerId: question.correct.id.toString(),
-    isCorrect: question.correct.id == answer.userAnswerId,
+    correctAnswerId: question.correctAnswer.id.toString(),
+    isCorrect: question.correctAnswer.id == answer.userAnswerId,
     userAnswerId: answer.userAnswerId?.toString(),
   };
 };
@@ -55,7 +58,7 @@ export const solve = (questions: IQuestion[], answers: AnswerMap): Summary => {
   );
 
   summary.passed =
-    _.filter(summary.solutions, sol => sol.isCorrect).length >= 18;
+    _.filter(summary.solutions, (sol) => sol.isCorrect).length >= 18;
 
   return summary;
 };

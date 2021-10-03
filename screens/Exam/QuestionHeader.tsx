@@ -1,9 +1,9 @@
-import React from 'react';
-import { Image, StyleSheet, Text } from 'react-native';
-import { View } from 'react-native';
-import { scale, verticalScale } from 'react-native-size-matters';
-import { globalStyles } from '../../styles/global';
-import { theme } from '../../styles/theme';
+import React from "react";
+import { Image, StyleSheet, Text } from "react-native";
+import { View } from "react-native";
+import { scale, verticalScale } from "react-native-size-matters";
+import { globalStyles } from "../../styles/global";
+import { theme } from "../../styles/theme";
 
 interface IQuestionHeaderProps {
   image: string;
@@ -22,7 +22,7 @@ export default function QuestionHeader({
         <View style={styles.imageWrapper}>
           <Image
             source={{
-              uri: `http://10.0.2.2:1337${image}`,
+              uri: image,
             }}
             style={styles.image}
           />
@@ -41,8 +41,8 @@ const styles = StyleSheet.create({
     marginBottom: verticalScale(32),
   },
   headerTop: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: verticalScale(16),
   },
   imageWrapper: {
@@ -50,11 +50,11 @@ const styles = StyleSheet.create({
     height: scale(60),
     width: scale(60),
     borderRadius: 8,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   image: {
-    height: '100%',
-    width: '100%',
+    height: "100%",
+    width: "100%",
   },
   count: {
     ...globalStyles.body2,
@@ -68,6 +68,6 @@ const styles = StyleSheet.create({
   },
   questionText: {
     ...globalStyles.body2,
-    fontFamily: 'ws-bold',
+    fontFamily: "ws-bold",
   },
 });

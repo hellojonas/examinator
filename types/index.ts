@@ -1,18 +1,15 @@
-export interface IQuestion {
-  id: number | string;
+export interface IAnswer {
+  id: number;
   value: string;
-  image: {
-    url: string;
-  };
-  category: 'ROAD_SINGS' | 'LAWS';
-  correct: {
-    id: number | string;
-    value: string;
-  };
-  answers: {
-    id: number | string;
-    value: string;
-  }[];
+}
+
+export interface IQuestion {
+  id: number;
+  value: string;
+  category: "signs" | "laws";
+  picture: string;
+  correctAnswer: IAnswer;
+  answers: IAnswer[];
   order?: number;
 }
 
@@ -30,7 +27,7 @@ export interface Summary {
   passed: boolean;
 }
 
-export interface IAnswer {
+export interface IUserAnswer {
   questionId: number | string;
   userAnswerId?: number | string;
 }

@@ -1,29 +1,25 @@
-import React, { useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
-import Button from '../components/Button';
-import { globalStyles } from '../styles/global';
-import { theme } from '../styles/theme';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { HomeStackParamList } from '../routes/HomeStack';
-import { verticalScale } from 'react-native-size-matters';
-import { useQuery } from '@apollo/client';
+import React, { useEffect, useState } from "react";
+import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import Button from "../components/Button";
+import { globalStyles } from "../styles/global";
+import { theme } from "../styles/theme";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { HomeStackParamList } from "../routes/HomeStack";
+import { verticalScale } from "react-native-size-matters";
+import _ from "lodash";
+import { useLoadExam } from "../modules/useFetch";
 
-import _ from 'lodash';
-import { GET_EXAM } from '../modules/queries';
-import { IQuestion } from '../types';
+const illustration = require("../assets/illustrations/rules.png");
 
-const illustration = require('../assets/illustrations/rules.png');
-
-type RulesProps = NativeStackScreenProps<HomeStackParamList, 'Rules'>;
+type RulesProps = NativeStackScreenProps<HomeStackParamList, "Rules">;
 
 export default function Rules({ navigation }: RulesProps) {
-  const ids = _.range(1, 26);
-  const { data, loading, error } = useQuery<{ questions: IQuestion[] }>(
-    GET_EXAM,
-    {
-      variables: { ids },
-    }
-  );
+  // const ids = _.range(1, 26);
+  const { data: questions, loading, error } = useLoadExam();
+
+  // useEffect(() => {
+  //   console.log(questions, error);
+  // }, [questions, error]);
 
   return (
     <View style={styles.rules}>
@@ -50,12 +46,12 @@ export default function Rules({ navigation }: RulesProps) {
               title="Inicar exame"
               handlePress={() => {
                 if (loading) {
-                  alert('loading please wait...');
+                  alert("loading please wait...");
                   return;
                 }
                 if (!error) {
-                  navigation.navigate('Exam', {
-                    exam: _.shuffle(data?.questions!),
+                  navigation.navigate("Exam", {
+                    exam: _.shuffle(questions!),
                   });
                 }
               }}
@@ -70,45 +66,46 @@ export default function Rules({ navigation }: RulesProps) {
 const styles = StyleSheet.create({
   rules: {
     flex: 1,
+    backgroundColor: theme.light.primary,
   },
   header: {
-    height: '60%',
+    height: "60%",
     paddingBottom: verticalScale(30),
     backgroundColor: theme.light.tertiary,
     paddingHorizontal: verticalScale(16),
   },
   imageWrapper: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 0,
     marginBottom: verticalScale(10),
-    height: '70%',
+    height: "70%",
   },
   image: {
-    resizeMode: 'contain',
-    height: '100%',
+    resizeMode: "contain",
+    height: "100%",
   },
   title: {
     ...globalStyles.heading2,
   },
   scroll: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     flex: 1,
-    height: '100%',
-    width: '100%',
+    height: "100%",
+    width: "100%",
   },
   wrapper: {
-    marginTop: '70%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginTop: "75%",
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: theme.light.primary,
     borderTopRightRadius: verticalScale(20),
     borderTopLeftRadius: verticalScale(20),
     paddingHorizontal: 16,
-    paddingTop: '20%',
-    paddingBottom: '25%',
+    paddingTop: "20%",
+    paddingBottom: "25%",
   },
   ruleCard: {
     ...globalStyles.shadowElements,
